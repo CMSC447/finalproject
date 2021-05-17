@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Covid-19 Web App</title>
+
+    <link rel="stylesheet" href="css/states.css">
+    <link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+</head>
+
+<body>
+
+    <div class="container">
+
+
+        <div class="col mb-2 bg-secondary border rounded-3">
+            <div class="container-fluid py-3 d-flex justify-content-center">
+                <h1 style="color:rgb(250, 250, 250);" class="display-6 fw-bold font-monospace">Cumulative Covid Case Tracker </h1> 
+            </div>
+        </div>
+
+        <!--holds county and prison map-->
+        <div class="col d-flex justify-content-center bg-dark">
+
+            <div id='map'></div>
+
+            <!-- <script type="text/javascript" src="javascript/montgomery.js"></script> -->
+            <script type="text/javascript" src="Javascript/california.js"></script>
+            <script type="text/javascript" src="Javascript/us-states.js"></script>
+            <script type="text/javascript" src="Javascript/prison.js"></script>
+            <script type="text/javascript" src="Javascript/countymap.js"></script>
+        </div>
+        
+        <div class="col  mb-1 bg-secondary border rounded-3">
+            
+            <div class="d-flex justify-content-center mb-1">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    View Instructions
+                </button>
+            </div>
+            
+            
+            <!-- Intructions Popup -->
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Instructions</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        
+                        <!--list of intructions/important information-->
+                        <ul>
+                            <li>
+                                To see the desired data, first select a date by clicking on the white box to the right of “Select Date”. 
+                                A calendar should pop up to allow you to choose the correct date. Then click “Submit”.
+                            </li>
+                            <li>
+                                To see the raw data, click on any or all the table buttons at the bottom of the app. 
+                            </li>
+                            <li>
+                                To change the map to show State, county, or prison data, mouse over the button on the map on the right side with a picture of a stack of squares. 
+                                This will allow you to display the data on the map for each state, county, prison, or any combination of the three.
+                            </li>
+                            <li>
+                                The date range with the most avalible data is from 03/01/2020 to 04/20/2021
+                            </li>
+                            <li>
+                                If there is no data avalible on the selected date for a specific region or prison,
+                                the region will be colored gray, or the prison marker will report that the case number
+                                is unknown.
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+  
+            <div class="container-fluid py-4 d-flex justify-content-center">
+                
+                <!--pick date-->
+                <label class="mx-2 font-monospace" style="color: rgb(250, 250, 250); font-size: large; font-weight: 700;" for="start">Select Date:</label>
+                <input type="date" id="date" min="2020-01-01" value="2020-01-01">
+                            
+                <button class="btn btn-primary mx-2" onclick="getData()">Submit</button>
+            </div>
+
+            <!--The table button controls-->
+            <p class="d-flex justify-content-center">
+                <a class="btn btn-primary mx-2" data-bs-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">State Table</a>
+                <button class="btn btn-primary mx-2" type="button" data-bs-toggle="collapse" data-bs-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">County Table</button>
+                <button class="btn btn-primary mx-2" type="button" data-bs-toggle="collapse" data-bs-target="#multiCollapseExample3" aria-expanded="false" aria-controls="multiCollapseExample3">Prison Table</button>
+            </p>
+              
+            <div class="row">
+                <div class="col">
+                    <div class="collapse multi-collapse" id="multiCollapseExample1">            
+                        <div class="card card-body " id ="stateTable">
+
+                            <!--The state data table-->
+                            <table class="table" id="states">
+                                <thead class ="stateTableHead">
+                                    <tr  class ="stateTableHeaderRow">
+                                        <th scope="col">State</th>
+                                        <th scope="col">Cases</th>
+                                        <th scope="col">Deaths</th>
+                                    </tr>
+                                </thead>
+                            </table> 
+    
+                        </div>    
+
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="collapse multi-collapse" id="multiCollapseExample2">
+                        <div class="card card-body" id ="countiesTable">
+                            <!--The county data table-->
+                            <table class="table" id="counties">
+                                <thead class ="countyTableHead">
+                                    <tr class ="countyTableHeaderRow">
+                                        <th scope="col">County</th>
+                                        <th scope="col">Cases</th>
+                                        <th scope="col">Deaths</th>
+                                    </tr>
+                                </thead>
+                            </table> 
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col">
+                    <div class="collapse multi-collapse" id="multiCollapseExample3">
+                        <div class="card card-body" id="prisonTable">
+                            <!--The prison data table-->
+                            <table class="table" id="prisons">
+                                <thead class="prisonTableHead">
+                                    <tr class="prisonTableHeaderRow">
+                                        <th scope="col">Prison</th>
+                                        <th scope="col">Cases</th>
+                                        <th scope="col">Deaths</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+   
+
+    </div>
+    
+    <!--No longer used in current design-->
+    <script>
+        function showStateData() {
+            var checkBox = document.getElementById("stateTable");
+            var stateData = document.getElementById("states");
+            if (checkBox.checked == true){
+                stateData.style.display = "table";
+            } else {
+                stateData.style.display = "none";
+            }
+        }
+
+        function showCountyData() {
+            var checkBox = document.getElementById("countyTable");
+            var countyData = document.getElementById("countys");
+            if (checkBox.checked == true){
+                countyData.style.display = "table";
+            } else {
+                countyData.style.display = "none";
+            }
+        }
+        
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"
+        integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js"
+        integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="Javascript/main.js"></script>
+    <script src="/reload/reload.js"></script> 
+</body>
+
+</html>

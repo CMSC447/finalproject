@@ -1,0 +1,26 @@
+{
+  "name": "covid-maps",
+  "version": "3.4.0",
+  "description": "A web app that displays covid019 case data at the state, county, and prison levels. ",
+  "main": "server.js",
+  "scripts": {
+    "start": "concurrently \"nodemon -e js,ejs,html,css\" \"npm run api\"",
+    "setup": "(cd api && npm install) && npm install",
+    "api": "cd api && npm run start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Web",
+    "App",
+    "covid-19"
+  ],
+  "author": "David Daugherty",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^6.1.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7",
+    "path": "^0.12.7"
+  }
+}
